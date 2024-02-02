@@ -104,7 +104,7 @@ function App() {
               />
               <Route
                 exact
-                path={routes.PROFILEEDIT + "/:profile_id"}
+                path={routes.PROFILEEDIT}
                 element={
                   <Layout title={"Return Button"}>
                     <EditProfile />

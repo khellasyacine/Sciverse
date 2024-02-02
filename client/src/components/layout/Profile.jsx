@@ -69,7 +69,7 @@ function Profile() {
               <p className="text-lg font-medium ml-2 mb-3">Settings</p>
               <button
                 onClick={() => {
-                  navigate(routes.PROFILEEDIT + `/${userProfile.id}`);
+                  navigate(routes.PROFILEEDIT);
                 }}
                 className="flex flex-wrap content-center w-full border-l-[3px] border-l-[#E87D00] pl-3 ml-4 mb-3"
               >
