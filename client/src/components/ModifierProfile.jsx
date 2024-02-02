@@ -1,37 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useContext, useEffect, useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { optionsField, optionsNature } from "../constants";
 import { UserContext } from "../contexts/UserContext";
 import axios from "axios";
-import { routes } from "../routes/routes";
 
-const AddModerator = () => {
+const ModifierProfile = ({ profile_id }) => {
   const navigate = useNavigate();
-  const { userProfile } = useContext(UserContext);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { userProfile,setUserProfile } = useContext(UserContext);
   const [isOpenNature, setIsOpenNature] = useState(false);
   const [isOpenField, setIsOpenField] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [data, setData] = useState({
+    id: profile_id,
     firstName: "",
     lastName: "",
     nature: "",
     field: "",
     email: "",
-    password: "",
-    confirmPassword: "",
   });
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
 
   const toggleListNature = () => {
     setIsOpenNature(!isOpenNature);
@@ -48,14 +35,56 @@ const AddModerator = () => {
     }));
   };
 
+  useEffect(() => {
+    const fetchModerator = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:5000/user/get/${profile_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userProfile.access_token}`,
+            },
+          }
+        );
+        setData(response.data.user);
+      } catch (error) {
+        console.error("Error:", error);
+
+        // Check if there is a response in the error object
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+          console.log("Response status:", error.response.status);
+          console.log("Response headers:", error.response.headers);
+
+          // Handle specific HTTP status codes if needed
+          if (error.response.status === 401) {
+            alert("Unauthorized: Please check your credentials.");
+          } else {
+            alert("An error occurred. Please try again later.");
+          }
+        } else if (error.request) {
+          console.error("No response received. Request:", error.request);
+          alert(
+            "No response received from the server. Please try again later."
+          );
+        } else {
+          console.error("Error message:", error.message);
+          alert("An unexpected error occurred. Please try again later.");
+        }
+      }
+    };
+
+    fetchModerator();
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (data.password !== data.confirmPassword)
       alert("Passwords do not match. Please re-enter your password.");
     else {
       try {
-        const response = await axios.post(
-          "http://127.0.0.1:5000/moderator/create",
+        const response = await axios.put(
+          `http://127.0.0.1:5000/user/update/${profile_id}`,
           data,
           {
             headers: {
@@ -66,6 +95,11 @@ const AddModerator = () => {
         if (response.data.error) {
           alert("Error: " + response.data.error);
         } else {
+          setUserProfile({
+            access_token: userProfile.access_token,
+            ...data,
+          });
+
           setFormSubmitted(true);
         }
       } catch (error) {
@@ -97,10 +131,7 @@ const AddModerator = () => {
   };
 
   useEffect(() => {
-    if (formSubmitted) {
-      alert("moderator added succefully");
-      navigate(-1);
-    }
+    if (formSubmitted) alert("profile updated succefully");
   }, [formSubmitted]);
 
   const handleAnnuler = (event) => {
@@ -127,7 +158,6 @@ const AddModerator = () => {
                 name="firstName"
                 value={data.firstName}
                 onChange={handleChange}
-                required
                 className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
                 placeholder="Enter your first name"
               />
@@ -143,7 +173,6 @@ const AddModerator = () => {
                 name="lastName"
                 value={data.lastName}
                 onChange={handleChange}
-                required
                 className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
                 placeholder="Enter your last name"
               />
@@ -164,7 +193,6 @@ const AddModerator = () => {
                     onClick={toggleListNature}
                     value={data.nature}
                     onChange={handleChange}
-                    required
                     className="register-input appearance-none signup-select"
                   >
                     <option value={""} key={null}>
@@ -191,7 +219,6 @@ const AddModerator = () => {
                   <select
                     name="field"
                     id="field"
-                    required
                     value={data.field}
                     onClick={toggleListField}
                     onChange={handleChange}
@@ -230,72 +257,12 @@ const AddModerator = () => {
               name="email"
               value={data.email}
               onChange={handleChange}
-              required
               className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
               placeholder="Enter your email address"
             />
           </div>
           {/* ************************************* */}
 
-          {/* *********** password input ********** */}
-          <div className="flex w-full flex-col">
-            <label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
-              Password:
-            </label>
-            <div className="relative flex w-full">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                value={data.password}
-                onChange={handleChange}
-                required
-                placeholder="Enter your password"
-                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
-              />
-              <div
-                onClick={togglePasswordVisibility}
-                className={`absolute inset-y-0 right-0 flex items-center mr-6 text-gray-500 cursor-pointer`}
-              >
-                {showPassword ? (
-                  <FaEyeSlash className="text-black text-opacity-90 h-4 w-4" />
-                ) : (
-                  <FaEye className="text-black text-opacity-90 h-4 w-4" />
-                )}
-              </div>
-            </div>
-          </div>
-          {/* ************************************* */}
-
-          {/* ******* confirm password input ****** */}
-          <div className="flex w-full flex-col">
-            <label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
-              Confirm Password:
-            </label>
-            <div className="relative flex w-full">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                id="confirmPassword"
-                name="confirmPassword"
-                value={data.confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="Confirm your password"
-                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
-              />
-              <div
-                onClick={toggleConfirmPasswordVisibility}
-                className={`absolute inset-y-0 right-0 flex items-center mr-6 text-gray-500 cursor-pointer`}
-              >
-                {showConfirmPassword ? (
-                  <FaEyeSlash className="text-black text-opacity-90 h-4 w-4" />
-                ) : (
-                  <FaEye className="text-black text-opacity-90 h-4 w-4" />
-                )}
-              </div>
-            </div>
-          </div>
-          {/* ************************************* */}
           <div className="w-full flex justify-center items-center gap-6 mt-2 bg-grey">
             <button
               onClick={handleAnnuler}
@@ -316,4 +283,4 @@ const AddModerator = () => {
   );
 };
 
-export default AddModerator;
+export default ModifierProfile;

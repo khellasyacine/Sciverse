@@ -22,6 +22,7 @@ import AddModeratorBtn from "./components/buttons/AddModeratorBtn";
 import EditArticleBtn from "./components/buttons/EditArticleBtn";
 import EditArticle from "./pages/EditArticle";
 import Favorite from "./pages/Favorite";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   const location = useLocation();
@@ -57,9 +58,7 @@ function App() {
                 exact
                 path={routes.FAVORITE}
                 element={
-                  <Layout
-                    title={"Favorite"}
-                  >
+                  <Layout title={"Favorite"}>
                     <Favorite />
                   </Layout>
                 }
@@ -96,10 +95,19 @@ function App() {
               />
               <Route
                 exact
-                path={routes.MODERATOREDIT+"/:moderator_id"}
+                path={routes.MODERATOREDIT + "/:moderator_id"}
                 element={
                   <Layout title={"Return Button"}>
                     <EditModerateur />
+                  </Layout>
+                }
+              />
+              <Route
+                exact
+                path={routes.PROFILEEDIT + "/:profile_id"}
+                element={
+                  <Layout title={"Return Button"}>
+                    <EditProfile />
                   </Layout>
                 }
               />

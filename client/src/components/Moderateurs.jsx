@@ -58,11 +58,11 @@ function Moderateurs() {
     };
 
     fetchModerators();
-  }, []);
+  }, [Display]);
 
   return (
     <div className="w-full h-full relative ">
-      {Display && <Pop Close={Close} moderator_id={moderatorID}/>}
+      {Display && <Pop Close={Close} moderator_id={moderatorID} />}
       <div className="w-full py-2 px-6 flex flex-col flex-wrap justify-center content-center bg-[#ffffff] bg-opacity-80 font-poppins">
         <div className="w-full flex justify-between content-center flex-nowrap my-1 mx-4 ">
           <div className="flex justify-between content-center flex-nowrap mx-4 w-[64%] px-4 ">
@@ -72,7 +72,7 @@ function Moderateurs() {
           </div>
         </div>
       </div>
-      {moderators.map((list,index) => {
+      {moderators.map((list, index) => {
         return (
           <div
             key={index}
@@ -92,7 +92,11 @@ function Moderateurs() {
                 >
                   <MdModeEditOutline className="w-5 h-5" />
                 </button>
-                <button onClick={() => Popup(list.id)}>
+                <button
+                  onClick={() => {
+                    Popup(list.id);
+                  }}
+                >
                   <FaTrash className="w-5 h-5" />
                 </button>
               </div>

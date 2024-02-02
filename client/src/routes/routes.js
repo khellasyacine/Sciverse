@@ -14,4 +14,5 @@ export const routes = {
   SETTINGS: "/settings",
   ARTICLE: "/article",
   PROFILE: "/profile",
+  PROFILEEDIT: "/editprofile",
 };

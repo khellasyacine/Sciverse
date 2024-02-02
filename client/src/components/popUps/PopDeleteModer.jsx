@@ -2,13 +2,10 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
-import { routes } from "../../routes/routes";
 
 function PopDeleteModer({ Close, moderator_id }) {
   const { userProfile } = useContext(UserContext);
   const [deleteCompleted, setDeleteCompleted] = useState(false);
-  const navigate = useNavigate();
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
@@ -47,7 +44,9 @@ function PopDeleteModer({ Close, moderator_id }) {
   };
 
   useEffect(() => {
-    if (deleteCompleted) navigate(routes.MODERATORS);
+    if (deleteCompleted) {
+      Close();
+    }
   }, [deleteCompleted]);
 
   return (

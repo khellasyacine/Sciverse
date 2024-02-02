@@ -18,8 +18,6 @@ const ModifierModerateur = ({ moderator_id }) => {
     nature: "",
     field: "",
     email: "",
-    password: "",
-    confirmPassword: "",
   });
 
   const toggleListNature = () => {
@@ -128,7 +126,10 @@ const ModifierModerateur = ({ moderator_id }) => {
   };
 
   useEffect(() => {
-    if (formSubmitted) alert("moderator added succefully");
+    if (formSubmitted) {
+      alert("moderator updated succefully");
+      navigate(-1);
+    }
   }, [formSubmitted]);
 
   const handleAnnuler = (event) => {
@@ -155,7 +156,6 @@ const ModifierModerateur = ({ moderator_id }) => {
                 name="firstName"
                 value={data.firstName}
                 onChange={handleChange}
-                required
                 className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
                 placeholder="Enter your first name"
               />
@@ -171,7 +171,6 @@ const ModifierModerateur = ({ moderator_id }) => {
                 name="lastName"
                 value={data.lastName}
                 onChange={handleChange}
-                required
                 className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
                 placeholder="Enter your last name"
               />
@@ -192,7 +191,6 @@ const ModifierModerateur = ({ moderator_id }) => {
                     onClick={toggleListNature}
                     value={data.nature}
                     onChange={handleChange}
-                    required
                     className="register-input appearance-none signup-select"
                   >
                     <option value={""} key={null}>
@@ -219,7 +217,6 @@ const ModifierModerateur = ({ moderator_id }) => {
                   <select
                     name="field"
                     id="field"
-                    required
                     value={data.field}
                     onClick={toggleListField}
                     onChange={handleChange}
@@ -258,7 +255,6 @@ const ModifierModerateur = ({ moderator_id }) => {
               name="email"
               value={data.email}
               onChange={handleChange}
-              required
               className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
               placeholder="Enter your email address"
             />
