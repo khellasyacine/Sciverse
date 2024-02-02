@@ -18,7 +18,7 @@ def get_moderators():
     result = []
     for moderator in moderators:
         moderator_data = {
-            "user_id": moderator.user_id,
+            "id": moderator.user_id,
             "firstName": moderator.firstName,
             "lastName": moderator.lastName,
             "email": moderator.email,

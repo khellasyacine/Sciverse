@@ -1,90 +1,288 @@
-import { useState } from "react";
-import Pop from "./popUps/PopModifierModerateur.jsx";
 import { useNavigate } from "react-router-dom";
-import {routes} from '../routes/routes.js'
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext.jsx";
+import { useContext, useEffect, useState } from "react";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { optionsField, optionsNature } from "../constants";
+import { UserContext } from "../contexts/UserContext";
+import axios from "axios";
 
-function ModifierModerateur(){
-    const {userProfile, setUserProfile} = useContext(UserContext);
-    const moder = userProfile;
-    const [nom,Setnom] = useState(moder.firstName);
-    const [prenom,Setprenom] = useState(moder.lastName);
-    const [surnom,Setsurnom] = useState(moder.username);
-    const [mail,Setmail] = useState(moder.email);
+const ModifierModerateur = ({ moderator_id }) => {
+  const navigate = useNavigate();
+  const { userProfile } = useContext(UserContext);
+  const [isOpenNature, setIsOpenNature] = useState(false);
+  const [isOpenField, setIsOpenField] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [data, setData] = useState({
+    id: moderator_id,
+    firstName: "",
+    lastName: "",
+    nature: "",
+    field: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-    const navigate = useNavigate();
-
-    const [Display,SetDisplay] = useState(false);
-    const Close = () =>{
-        SetDisplay(false);
-    }
-    const Confirm = () =>{
-        SetDisplay(!Display);
-    }
-
-    const handleChangeNom = (event) => {
-        Setnom(event.target.value);
-    }
-    const handleChangePreom = (event) => {
-        Setprenom(event.target.value);
-    }
-    const handleChangeSurnom = (event) => {
-        Setsurnom(event.target.value);
-    }
-    const handleChangeMail = (event) => {
-        Setmail(event.target.value);
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const ModifiedUser={
-            "email" : mail,
-            "password" : userProfile.password,
-            "firstName" : prenom,
-            "lastName" : nom,
-            "nature" : userProfile.nature,
-            "username" : surnom,
-            "profilePicture": userProfile.profilePicture,
-        };
-        setUserProfile(ModifiedUser);       
-        console.log(ModifiedUser)
-        SetDisplay(!Display);
-    }
-
-    const handleSubmitPop = (event) => {
-        event.preventDefault();
-        setUserProfile(ModifiedUser);        
-        console.log(ModifiedUser)
-        SetDisplay(!Display);
-        navigate(-1);
-    }
-
-    const handleAnnuler = (event) => {
-        event.preventDefault();     
-        navigate(-1);
-    }
-
-    return (
-        <div className="w-full relative">
-            {Display && <Pop Close={Close} Confirmer={handleSubmitPop} />}
-            <div className="w-full py-4 sm:px-6 flex flex-col flex-wrap justify-center content-center bg-[#dedede] font-poppins">
-                <form autoComplete="off" action="post" className="w-full flex flex-col flex-wrap justify-center content-center">
-                    <p className=" font-poppins text-xs pl-1 text-[#190B28] my-1 sm:w-1/2 w-5/6">Nom:</p>
-                    <input type="text" defaultValue={moder.firstName} onChange={handleChangeNom} className="py-2.5 sm:pl-8 pl-4 sm:w-1/2 rounded-full bordre-none bg-[#E87D00] bg-opacity-25 text-base mb-4"/>
-                    <p className=" font-poppins text-xs pl-1 text-[#190B28] my-1">Prenom:</p>
-                    <input type="text" defaultValue={moder.lastName} onChange={handleChangePreom} className="py-2.5 sm:pl-8 pl-4 sm:w-1/2 rounded-full bordre-none bg-[#E87D00] bg-opacity-25 text-base mb-4"/>
-                    <p className=" font-poppins text-xs pl-1 text-[#190B28] my-1">Nom d'utilisateur:</p>
-                    <input type="text" defaultValue={moder.username} onChange={handleChangeSurnom} className="py-2.5 sm:pl-8 pl-4 sm:w-1/2 rounded-full bordre-none bg-[#E87D00] bg-opacity-25 text-base mb-4"/>
-                    <p className=" font-poppins text-xs pl-1 text-[#190B28] my-1">Email:</p>
-                    <input type="text" defaultValue={moder.email} onChange={handleChangeMail} className="py-2.5 sm:pl-8 pl-4 sm:w-1/2 rounded-full bordre-none bg-[#E87D00] bg-opacity-25 text-base mb-10"/>
-                    <div className='flex justify-evenly mb-4'>
-                        <button onClick={handleAnnuler} className='lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-4 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#A7A7A7]'>Annuler</button>
-                        <button onClick={handleSubmit} className='lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-4 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#E87D00]'>Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+  const toggleListNature = () => {
+    setIsOpenNature(!isOpenNature);
   };
-  export default ModifierModerateur;
+
+  const toggleListField = () => {
+    setIsOpenField(!isOpenField);
+  };
+
+  const handleChange = (e) => {
+    setData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchModerator = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:5000/user/get/${moderator_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userProfile.access_token}`,
+            },
+          }
+        );
+        setData(response.data.user);
+      } catch (error) {
+        console.error("Error:", error);
+
+        // Check if there is a response in the error object
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+          console.log("Response status:", error.response.status);
+          console.log("Response headers:", error.response.headers);
+
+          // Handle specific HTTP status codes if needed
+          if (error.response.status === 401) {
+            alert("Unauthorized: Please check your credentials.");
+          } else {
+            alert("An error occurred. Please try again later.");
+          }
+        } else if (error.request) {
+          console.error("No response received. Request:", error.request);
+          alert(
+            "No response received from the server. Please try again later."
+          );
+        } else {
+          console.error("Error message:", error.message);
+          alert("An unexpected error occurred. Please try again later.");
+        }
+      }
+    };
+
+    fetchModerator();
+  }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (data.password !== data.confirmPassword)
+      alert("Passwords do not match. Please re-enter your password.");
+    else {
+      try {
+        const response = await axios.put(
+          `http://127.0.0.1:5000/user/update/${moderator_id}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${userProfile.access_token}`,
+            },
+          }
+        );
+        if (response.data.error) {
+          alert("Error: " + response.data.error);
+        } else {
+          setFormSubmitted(true);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+
+        // Check if there is a response in the error object
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+          console.log("Response status:", error.response.status);
+          console.log("Response headers:", error.response.headers);
+
+          // Handle specific HTTP status codes if needed
+          if (error.response.status === 401) {
+            alert("Unauthorized: Please check your credentials.");
+          } else {
+            alert("An error occurred. Please try again later.");
+          }
+        } else if (error.request) {
+          console.error("No response received. Request:", error.request);
+          alert(
+            "No response received from the server. Please try again later."
+          );
+        } else {
+          console.error("Error message:", error.message);
+          alert("An unexpected error occurred. Please try again later.");
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (formSubmitted) alert("moderator added succefully");
+  }, [formSubmitted]);
+
+  const handleAnnuler = (event) => {
+    event.preventDefault();
+    navigate(-1);
+  };
+
+  return (
+    <div className="w-full h-fit relative flex justify-start items-center flex-col bg-grey pt-4 max-md:pt-2">
+      <div className="flex flex-row w-1/2 justify-center items-center py-2 ">
+        <form
+          className="flex flex-col w-full justify-center items-center gap-4"
+          onSubmit={handleSubmit}
+        >
+          {/* ********** full name input ********** */}
+          <div className="flex flew-row justify-center items-center w-full gap-3">
+            <div className="flex flex-1 flex-col">
+              <label className="font-poppins text-xs pl-1 text-[#190B28] my-1">
+                First Name:
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={data.firstName}
+                onChange={handleChange}
+                required
+                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+                placeholder="Enter your first name"
+              />
+            </div>
+
+            <div className="flex flex-1 flex-col">
+              <label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
+                Last Name:
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={data.lastName}
+                onChange={handleChange}
+                required
+                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+                placeholder="Enter your last name"
+              />
+            </div>
+          </div>
+          {/* ************************************* */}
+          {/* ********* Nature input ********** */}
+          <div className="flex w-full flex-col">
+            <label className="block mb-1 ml-2 text-sm font-poppins font-medium opacity-50">
+              Profession:
+            </label>
+            <div className="flex flew-row justify-center items-center w-full gap-3">
+              <div className="relative flex-1">
+                <div>
+                  <select
+                    name="nature"
+                    id="nature"
+                    onClick={toggleListNature}
+                    value={data.nature}
+                    onChange={handleChange}
+                    required
+                    className="register-input appearance-none signup-select"
+                  >
+                    <option value={""} key={null}>
+                      You are a ...
+                    </option>
+                    {optionsNature.map((nature) => {
+                      return (
+                        <option value={nature.value} key={nature.label}>
+                          {nature.label}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {isOpenNature ? (
+                    <FaAngleUp className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  ) : (
+                    <FaAngleDown className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  )}
+                </div>
+              </div>
+
+              <div className="relative flex-1">
+                <div>
+                  <select
+                    name="field"
+                    id="field"
+                    required
+                    value={data.field}
+                    onClick={toggleListField}
+                    onChange={handleChange}
+                    className="register-input appearance-none signup-select"
+                  >
+                    <option value={""} key={null}>
+                      Field
+                    </option>
+                    {optionsField.map((field) => {
+                      return (
+                        <option value={field.value} key={field.label}>
+                          {field.label}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {isOpenField ? (
+                    <FaAngleUp className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  ) : (
+                    <FaAngleDown className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* ************************************* */}
+
+          {/* ************ email input ************ */}
+          <div className="flex w-full flex-col">
+            <label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
+              Email adress:
+            </label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              required
+              className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+              placeholder="Enter your email address"
+            />
+          </div>
+          {/* ************************************* */}
+
+          <div className="w-full flex justify-center items-center gap-6 mt-2 bg-grey">
+            <button
+              onClick={handleAnnuler}
+              className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-10 px-7 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#A7A7A7]"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-5 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#E87D00]"
+            >
+              Continue
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ModifierModerateur;

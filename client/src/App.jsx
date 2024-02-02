@@ -96,7 +96,7 @@ function App() {
               />
               <Route
                 exact
-                path={routes.MODERATOREDIT}
+                path={routes.MODERATOREDIT+"/:moderator_id"}
                 element={
                   <Layout title={"Return Button"}>
                     <EditModerateur />
