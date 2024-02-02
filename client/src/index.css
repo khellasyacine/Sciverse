@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&family=Josefin+Sans:wght@100;200;300;400;500;600;700&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@layer components {
+  .max-container {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .register-input {
+    @apply w-full h-full font-poppins font-light bg-orange bg-opacity-[15%] pr-3 pl-4 py-2 rounded-full border hover:border-orange focus:outline-none focus:border-orange
+  }
+
+  .menu-text{
+    @apply flex gap-2.5 text-black font-poppins font-semibold text-xl justify-start items-center w-full hover:text-orange
+  }
+}
+
+@layer utilities {
+  .padding {
+    @apply xl:px-16 px-10 xl:py-24 py-12;
+  }
+
+  .padding-x {
+    @apply xl:px-16 px-10;
+  }
+
+  .padding-y {
+    @apply xl:py-24 py-12;
+  }
+
+  .padding-l {
+    @apply xl:pl-16 pl-10;
+  }
+
+  .padding-r {
+    @apply xl:pr-16 pr-10;
+  }
+
+  .padding-t {
+    @apply xl:pt-24 pt-12;
+  }
+
+  .padding-b {
+    @apply xl:pb-24 pb-12;
+  }
+
+}
