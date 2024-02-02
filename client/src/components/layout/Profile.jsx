@@ -24,16 +24,16 @@ function Profile(){
                                 </div>
                         </div>
                         <hr className="bg-[#E87D00] h-1 sm:h-0.5 w-full rounded-full border-none mt-3"/>
-                        <div className="sm:w-1/2 flex flex-col items-start content-center justify-between flex-wrap sm:mt-12 pl-3">
-                            <div className="flex justify-center flex-col flex-wrap w-full border-l-[3px] border-l-[#E87D00] pl-3 ml-4 mb-2">
+                        <div className="sm:w-1/2 w-full flex flex-col items-start content-center justify-between flex-wrap sm:mt-10 mt-4 pl-3">
+                            <div className="flex justify-center flex-col flex-wrap w-full border-l-[3px] border-l-[#E87D00] pl-3 sm:ml-4 mb-2">
                                 <p className="capitalize text-xs font-poppins ">Email</p>
                                 <p className="capitalize text-sm font-poppins">{userProfile.email}</p>
                             </div>
-                            <div className="flex justify-center flex-col flex-wrap w-full border-l-[3px] border-l-[#E87D00] pl-3 ml-4 mb-2">
+                            <div className="flex justify-center flex-col flex-wrap w-full border-l-[3px] border-l-[#E87D00] pl-3 sm:ml-4 mb-2">
                                 <p className="capitalize text-xs font-poppins ">Nature</p>
                                 <p className="capitalize text-sm font-poppins">{userProfile.nature}</p>
                             </div>
-                            <div className="flex justify-center flex-col flex-wrap w-full border-l-[3px] border-l-[#E87D00] pl-3 ml-4 mb-2">
+                            <div className="flex justify-center flex-col flex-wrap w-full border-l-[3px] border-l-[#E87D00] pl-3 sm:ml-4 mb-2">
                                 <p className="capitalize text-xs font-poppins ">Field</p>
                                 <p className="capitalize text-sm font-poppins">{userProfile.field}</p>
                             </div>
@@ -42,7 +42,7 @@ function Profile(){
                                 <p className="capitalize text-sm font-poppins">{userProfile.role}</p>
                             </div>
                         </div>
-                        <div className="sm:w-1/2 flex flex-col content-center justify-evenly flex-wrap mt-2 pl-1">
+                        <div className="sm:w-1/2 w-full flex flex-col content-center justify-evenly flex-wrap mt-2 pl-1">
                             <p className="text-lg font-medium ml-2 mb-3">Settings</p>
                             <button onClick={()=>{ navigate(routes.MODERATOREDIT)}} className="flex flex-wrap content-center w-full border-l-[3px] border-l-[#E87D00] pl-3 ml-4 mb-3">
                                 <FaUserClock className="h-5 w-5 mr-1"/>

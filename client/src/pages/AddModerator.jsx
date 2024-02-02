@@ -296,7 +296,7 @@ const AddModerator = () => {
             </div>
           </div>
           {/* ************************************* */}
-          <div className="w-full flex justify-center items-center gap-6 mt-2 bg-grey">
+          <div className="w-full flex justify-center items-center gap-6 mt-2 bg-grey mb-5">
             <button
               onClick={handleAnnuler}
               className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-10 px-7 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#A7A7A7]"
@@ -305,7 +305,7 @@ const AddModerator = () => {
             </button>
             <button
               type="submit"
-              className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-5 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#E87D00]"
+              className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-7 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#E87D00]"
             >
               Continue
             </button>
