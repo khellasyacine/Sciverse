@@ -1,13 +1,10 @@
 import { GoHomeFill } from "react-icons/go";
 import { IoStar } from "react-icons/io5";
-import { FaClockRotateLeft } from "react-icons/fa6";
-import { FaFilter } from "react-icons/fa";
 import { routes } from "../routes/routes";
 
 export const navLinks = [
   { href: routes.HOME, label: "Home", icon: GoHomeFill },
   { href: routes.FAVORITE, label: "Favorite", icon: IoStar },
-  { href: routes.HISTORY, label: "History", icon: FaClockRotateLeft },
 ];
 
 export const filterInitialization = [
@@ -22,12 +19,15 @@ export const optionsNature = [
   { value: "student", label: "Student" },
   { value: "professor", label: "Professor" },
   { value: "researcher", label: "Researcher" },
+  { value: "other", label: "Other" },
 ];
 
 export const optionsField = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
+  { value: "computer science", label: "Computer Science" },
+  { value: "medecin", label: "Medecin" },
+  { value: "mechanics", label: "Mechanics" },
+  { value: "economic", label: "Economic" },
+  { value: "other", label: "Other" },
 ];
 
 export const variantSignLgAbove = {

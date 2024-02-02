@@ -65,11 +65,6 @@ function App() {
               />
               <Route
                 exact
-                path={routes.HISTORY}
-                element={<Layout title={"History"} />}
-              />
-              <Route
-                exact
                 path={routes.SETTINGS}
                 element={
                   <Layout title={"Settings"}>
