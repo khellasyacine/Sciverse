@@ -4,7 +4,6 @@ export const routes = {
   SIGNUP: "/signup",
   HOME: "/home",
   FAVORITE: "/favoris",
-  HISTORY: "/history",
   CATEGORIES: "/categories",
   MODERATORS: "/moderateurs",
   MODERATOREDIT: "/editmoderateur",
@@ -14,4 +13,5 @@ export const routes = {
   SETTINGS: "/settings",
   ARTICLE: "/article",
   PROFILE: "/profile",
+  PROFILEEDIT: "/editprofile",
 };

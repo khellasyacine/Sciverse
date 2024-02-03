@@ -1,14 +1,11 @@
-import AuthPagesBg from "../components/layout/AuthPagesBg";
-import { logoOrangeBlack } from "../assets/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useContext, useEffect, useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
-import { motion } from "framer-motion";
 import { optionsField, optionsNature } from "../constants";
 import { UserContext } from "../contexts/UserContext";
-import { routes } from "../routes/routes";
 import axios from "axios";
+import { routes } from "../routes/routes";
 
 const AddModerator = () => {
   const navigate = useNavigate();
@@ -100,7 +97,10 @@ const AddModerator = () => {
   };
 
   useEffect(() => {
-    if (formSubmitted) alert("moderator added succefully");
+    if (formSubmitted) {
+      alert("moderator added succefully");
+      navigate(-1);
+    }
   }, [formSubmitted]);
 
   const handleAnnuler = (event) => {

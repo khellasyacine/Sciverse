@@ -5,20 +5,13 @@ import { optionsField, optionsNature } from "../constants";
 import { UserContext } from "../contexts/UserContext";
 import axios from "axios";
 
-const ModifierModerateur = ({ moderator_id }) => {
+const ModifierProfile = () => {
   const navigate = useNavigate();
-  const { userProfile } = useContext(UserContext);
+  const { userProfile, setUserProfile } = useContext(UserContext);
   const [isOpenNature, setIsOpenNature] = useState(false);
   const [isOpenField, setIsOpenField] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [data, setData] = useState({
-    id: moderator_id,
-    firstName: "",
-    lastName: "",
-    nature: "",
-    field: "",
-    email: "",
-  });
+  const [data, setData] = useState(userProfile);
 
   const toggleListNature = () => {
     setIsOpenNature(!isOpenNature);
@@ -36,17 +29,21 @@ const ModifierModerateur = ({ moderator_id }) => {
   };
 
   useEffect(() => {
-    const fetchModerator = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:5000/user/get/${moderator_id}`,
+          `http://127.0.0.1:5000/user/get/${userProfile.id}`,
           {
             headers: {
               Authorization: `Bearer ${userProfile.access_token}`,
             },
           }
         );
-        setData(response.data.user);
+        setUserProfile({
+          access_token: userProfile.access_token,
+          id: userProfile.id,
+          ...response.data.user,
+        });
       } catch (error) {
         console.error("Error:", error);
 
@@ -73,63 +70,54 @@ const ModifierModerateur = ({ moderator_id }) => {
         }
       }
     };
-
-    fetchModerator();
-  }, []);
+    if (formSubmitted) fetchUserData();
+  }, [formSubmitted]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (data.password !== data.confirmPassword)
-      alert("Passwords do not match. Please re-enter your password.");
-    else {
-      try {
-        const response = await axios.put(
-          `http://127.0.0.1:5000/user/update/${moderator_id}`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${userProfile.access_token}`,
-            },
-          }
-        );
-        if (response.data.error) {
-          alert("Error: " + response.data.error);
-        } else {
-          setFormSubmitted(true);
-        }
-      } catch (error) {
-        console.error("Error:", error);
 
-        // Check if there is a response in the error object
-        if (error.response) {
-          console.log("Response data:", error.response.data);
-          console.log("Response status:", error.response.status);
-          console.log("Response headers:", error.response.headers);
-
-          // Handle specific HTTP status codes if needed
-          if (error.response.status === 401) {
-            alert("Unauthorized: Please check your credentials.");
-          } else {
-            alert("An error occurred. Please try again later.");
-          }
-        } else if (error.request) {
-          console.error("No response received. Request:", error.request);
-          alert(
-            "No response received from the server. Please try again later."
-          );
-        } else {
-          console.error("Error message:", error.message);
-          alert("An unexpected error occurred. Please try again later.");
+    try {
+      const response = await axios.put(
+        `http://127.0.0.1:5000/user/update/${userProfile.id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${userProfile.access_token}`,
+          },
         }
+      );
+      if (response.data.error) {
+        alert("Error: " + response.data.error);
+      } else {
+        setFormSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+
+      // Check if there is a response in the error object
+      if (error.response) {
+        console.log("Response data:", error.response.data);
+        console.log("Response status:", error.response.status);
+        console.log("Response headers:", error.response.headers);
+
+        // Handle specific HTTP status codes if needed
+        if (error.response.status === 401) {
+          alert("Unauthorized: Please check your credentials.");
+        } else {
+          alert("An error occurred. Please try again later.");
+        }
+      } else if (error.request) {
+        console.error("No response received. Request:", error.request);
+        alert("No response received from the server. Please try again later.");
+      } else {
+        console.error("Error message:", error.message);
+        alert("An unexpected error occurred. Please try again later.");
       }
     }
   };
 
   useEffect(() => {
-    if (formSubmitted) {
-      alert("moderator updated succefully");
-      navigate(-1);
-    }
+    if (formSubmitted) alert("profile updated succefully");
   }, [formSubmitted]);
 
   const handleAnnuler = (event) => {
@@ -281,4 +269,4 @@ const ModifierModerateur = ({ moderator_id }) => {
   );
 };
 
-export default ModifierModerateur;
+export default ModifierProfile;

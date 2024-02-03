@@ -1,6 +1,5 @@
 import { MdModeEditOutline } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
-import { CiMenuKebab } from "react-icons/ci";
 import Pop from "./popUps/PopDeleteModer.jsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +9,9 @@ import { UserContext } from "../contexts/UserContext.jsx";
 
 function Moderateurs() {
   const [Display, SetDisplay] = useState(false);
-  const Popup = () => {
+  const [moderatorID, setModeratorID] = useState(null);
+  const Popup = (id) => {
+    setModeratorID(id);
     SetDisplay(true);
   };
   const Close = () => {
@@ -57,11 +58,11 @@ function Moderateurs() {
     };
 
     fetchModerators();
-  }, []);
+  }, [Display]);
 
   return (
     <div className="w-full h-full relative ">
-      {Display && <Pop Close={Close} Delete={FilterData()} />}
+      {Display && <Pop Close={Close} moderator_id={moderatorID} />}
       <div className="w-full py-2 px-6 flex flex-col flex-wrap justify-center content-center bg-[#ffffff] bg-opacity-80 font-poppins">
         <div className="w-full flex justify-between content-center flex-nowrap my-1 mx-4 ">
           <div className="flex justify-between content-center flex-nowrap mx-4 w-[64%] px-4 ">
@@ -71,7 +72,7 @@ function Moderateurs() {
           </div>
         </div>
       </div>
-      {moderators.map((list,index) => {
+      {moderators.map((list, index) => {
         return (
           <div
             key={index}
@@ -86,12 +87,16 @@ function Moderateurs() {
               <div className="flex justify-between content-center flex-nowrap ml-4 w-16">
                 <button
                   onClick={() => {
-                    navigate(routes.MODERATOREDIT);
+                    navigate(routes.MODERATOREDIT + `/${list.id}`);
                   }}
                 >
                   <MdModeEditOutline className="w-5 h-5" />
                 </button>
-                <button onClick={Popup}>
+                <button
+                  onClick={() => {
+                    Popup(list.id);
+                  }}
+                >
                   <FaTrash className="w-5 h-5" />
                 </button>
               </div>
