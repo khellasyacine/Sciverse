@@ -44,6 +44,7 @@ const ModifierProfile = () => {
           id: userProfile.id,
           ...response.data.user,
         });
+        setFormSubmitted(false);
       } catch (error) {
         console.error("Error:", error);
 
@@ -90,6 +91,7 @@ const ModifierProfile = () => {
         alert("Error: " + response.data.error);
       } else {
         setFormSubmitted(true);
+        alert("profile updated succefully");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -115,10 +117,6 @@ const ModifierProfile = () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (formSubmitted) alert("profile updated succefully");
-  }, [formSubmitted]);
 
   const handleAnnuler = (event) => {
     event.preventDefault();

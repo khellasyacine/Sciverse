@@ -8,6 +8,8 @@ services:
       - xpack.security.enabled=false  # Disable X-Pack security
     ports:
       - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
 
   api:
     build:
@@ -19,11 +21,13 @@ services:
       - elasticsearch
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
- 
+    volumes:
+      - ./api:/app
+
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile 
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     depends_on:
@@ -31,8 +35,6 @@ services:
     volumes:
       - ./client/src:/app/src
 
-# networks:
-#   default:
-#     external:
-#       name: _sciverse
 
+volumes:
+  elasticsearch_data:  # Define a named volume for Elasticsearch data persistence
