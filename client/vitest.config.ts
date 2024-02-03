@@ -11,7 +11,7 @@ export default defineConfig({
     env: {
       IS_REACT_ACT_ENVIRONMENT: 'true',
     },
-    include: ['__tests__/*.jsx'],
+    include: ['__test__/**/*.test.js'],
   },
   resolve: {
     alias: {
