@@ -10,33 +10,33 @@ function ArticleDetails() {
   const { userProfile } = useContext(UserContext);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleAddRow = (inputValue) => {
+  const handleAddRow = async (inputValue) => {
     const delimiters = [",", ";", "|", "/", "."];
     const elements = inputValue
       .split(new RegExp(`[${delimiters.join("")}]`))
       .map((element) => element.trim());
 
     const filteredElements = elements.filter((element) => element !== "");
-
+    console.log(filteredElements);
     return filteredElements;
   };
 
   const joinArrayDelimiter = (arr) => arr.join(", ");
 
-  const keywordsValues = ArticleDisplay.keywords.map(
-    (keywordObject) => keywordObject.keyword
-  );
+  // const keywordsValues = ArticleDisplay.keywords?.map(
+  //   (keywordObject) => keywordObject.keyword
+  // );
 
-  const referencesValues = ArticleDisplay.references.map(
-    (referenceObject) => referenceObject.reference
-  );
+  // const referencesValues = ArticleDisplay.references?.map(
+  //   (referenceObject) => referenceObject.reference
+  // );
 
   const [keywordsInput, setKeyWordsInput] = useState(
-    joinArrayDelimiter(keywordsValues)
+    joinArrayDelimiter(ArticleDisplay.keywords)
   );
 
   const [referencesInput, setReferencesInput] = useState(
-    joinArrayDelimiter(referencesValues)
+    joinArrayDelimiter(ArticleDisplay.references)
   );
 
   const [data, setData] = useState(ArticleDisplay);
@@ -50,10 +50,12 @@ function ArticleDetails() {
 
   const handleKeywordsChange = (event) => {
     setKeyWordsInput(event.target.value);
+    console.log("Key : " + keywordsInput);
   };
 
   const handleReferencesChange = (event) => {
     setReferencesInput(event.target.value);
+    console.log("reference : " + referencesInput);
   };
 
   useEffect(() => {
@@ -105,13 +107,13 @@ function ArticleDetails() {
     event.preventDefault();
 
     try {
-      const keywords = await handleAddRow(keywordsInput);
-      const references = await handleAddRow(referencesInput);
+      const keywordsTable = await handleAddRow(keywordsInput);
+      const referencesTable = await handleAddRow(referencesInput);
 
       setData({
         ...data,
-        keywords: keywords,
-        references: references,
+        keywords: keywordsTable,
+        references: referencesTable,
       });
       const response = await axios.put(
         `http://127.0.0.1:5000/article/edit/${ArticleDisplay.id}`,

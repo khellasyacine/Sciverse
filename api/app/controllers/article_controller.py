@@ -142,7 +142,6 @@ def get_all_articles():
 
     #------------------------------------ ADD PUT DELETE-------------------------------------
 
-
 @jwt_required()
 def edit_article(article_id):
     article = Article.query.get(article_id)
@@ -153,54 +152,48 @@ def edit_article(article_id):
     current_user_id = get_jwt_identity()
 
     if request.method == 'PUT':
-        # Update the article fields
-        article.title = request.json.get('title', article.title)
-        article.abstract = request.json.get('abstract', article.abstract)
-        article.full_text = request.json.get('full_text', article.full_text)
-        # article.pdf_url = request.json.get('pdf_url', article.pdf_url)
-    
-        # Update other attributes
-        article.references = []
+        # Update the article fields if provided in the request and not empty
+        if 'title' in request.json and request.json['title']:
+            article.title = request.json['title']
+        if 'abstract' in request.json and request.json['abstract']:
+            article.abstract = request.json['abstract']
+        if 'full_text' in request.json and request.json['full_text']:
+            article.full_text = request.json['full_text']
 
-        for reference_data in request.json.get('references', []):
-            reference = BibliographicReference.query.filter_by(reference=reference_data).first()
+        # Update other attributes if provided in the request
+        if 'references' in request.json:
+            article.references = []
+            for reference_data in request.json['references']:
+                if reference_data:
+                    reference = BibliographicReference.query.filter_by(reference=reference_data).first()
+                    if not reference:
+                        reference = BibliographicReference(reference=reference_data)
+                        db.session.add(reference)
+                    article.references.append(reference)
 
-            if not reference:
-                # Create a new reference if not exists
-                reference = BibliographicReference(reference=reference_data)
-                db.session.add(reference)
+        if 'keywords' in request.json:
+            article.keywords = []
+            for keyword_data in request.json['keywords']:
+                if keyword_data:
+                    keyword = Keyword.query.filter_by(keyword=keyword_data).first()
+                    if not keyword:
+                        keyword = Keyword(keyword=keyword_data)
+                        db.session.add(keyword)
+                    article.keywords.append(keyword)
 
-            article.references.append(reference)
+        if 'authors' in request.json:
+            article.authors = []
+            for author_data in request.json['authors']:
+                if author_data:
+                    author = Author.query.filter_by(email=author_data['email']).first()
+                    if not author:
+                        author = Author(name=author_data['name'], email=author_data['email'])
+                        db.session.add(author)
+                    article.authors.append(author)
 
-        article.keywords = []
-
-        for keyword_data in request.json.get('keywords', []):
-            keyword = Keyword.query.filter_by(keyword=keyword_data).first()
-
-            if not keyword:
-                # Create a new keyword if not exists
-                keyword = Keyword(keyword=keyword_data)
-                db.session.add(keyword)
-
-            article.keywords.append(keyword)
-
-        # Update authors
-        updated_authors = request.json.get('authors', [])
-        article.authors = []
-
-        for author_data in updated_authors:
-            author = Author.query.filter_by(email=author_data['email']).first()
-
-            if not author:
-                # Create a new author if not exists
-                author = Author(name=author_data['name'], email=author_data['email'])
-                db.session.add(author)
-
-            article.authors.append(author)
-
-        article.pdf_url = generate_pdf(article)
-        # Save the updated article
-        db.session.commit()
+        # Save the updated article if any change is made
+        if db.session.dirty:
+            db.session.commit()
 
         mapping_entry = ArticleElasticsearchMapping.query.filter_by(article_id=article.id).first()
         if mapping_entry:
@@ -233,10 +226,7 @@ def edit_article(article_id):
         db.session.add(edit)
         db.session.commit()
 
-
         return jsonify({'message': 'Article edited successfully'})
-
-
 
 
 #delete article 

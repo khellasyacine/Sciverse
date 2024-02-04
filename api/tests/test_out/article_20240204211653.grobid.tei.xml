@@ -8,14 +8,14 @@ xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.co
 			<titleStmt>
 				<title level="a" type="main">LifeLearner: Hardware-Aware Meta Continual Learning System for Embedded Computing Platforms</title>
 				<funder>
-					<orgName type="full">Google Faculty Award</orgName>
+					<orgName type="full">Nokia Bell Labs</orgName>
 				</funder>
-				<funder ref="#_YaZysCQ">
+				<funder ref="#_5dXjpqY">
 					<orgName type="full">European Research Council</orgName>
 					<orgName type="abbreviated">ERC</orgName>
 				</funder>
 				<funder>
-					<orgName type="full">Nokia Bell Labs</orgName>
+					<orgName type="full">Google Faculty Award</orgName>
 				</funder>
 			</titleStmt>
 			<publicationStmt>
@@ -87,7 +87,7 @@ xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.co
 		</fileDesc>
 		<encodingDesc>
 			<appInfo>
-				<application version="0.8.0" ident="GROBID" when="2024-02-04T17:03+0000">
+				<application version="0.8.0" ident="GROBID" when="2024-02-04T20:17+0000">
 					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
 					<ref target="https://github.com/kermitt2/grobid"/>
 				</application>
@@ -169,7 +169,7 @@ xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.co
 <div><head>ACKNOWLEDGMENTS</head><p>This work is supported by a <rs type="funder">Google Faculty Award</rs>, <rs type="funder">ERC</rs> through Project <rs type="grantNumber">833296</rs> (EAR), and <rs type="funder">Nokia Bell Labs</rs> through a donation</p></div>
 			</div>
 			<listOrg type="funding">
-				<org type="funding" xml:id="_YaZysCQ">
+				<org type="funding" xml:id="_5dXjpqY">
 					<idno type="grant-number">833296</idno>
 				</org>
 			</listOrg>

@@ -83,7 +83,7 @@ function ArticleCard({ article }) {
 
         <p className="text-xl font-medium max-md:text-lg">{article.title}</p>
         <p className="text-xs mb-2.5 text-justify max-sm:max-w-[350px] max-md:max-w-md">
-          {article.authors.map((author, index) => (
+          {article.authors?.map((author, index) => (
             <React.Fragment key={index}>
               {getAuteurInstitus(author)}
               {index !== article.authors.length - 1 && <br />}
@@ -95,7 +95,7 @@ function ArticleCard({ article }) {
         </p>
         <div className="lg:h-1/4 sm:h-1/5 mt-2 w-full flex justify-between items-center max-sm:justify-end">
           <div className="flex sm:w-[60.5%] w-1/3 overflow-hidden flex-row shrink-0 h-full max-sm:hidden py-2 items-center">
-            {article.keywords.map((mot, index) => {
+            {article.keywords?.map((mot, index) => {
               return (
                 <div
                   key={index}

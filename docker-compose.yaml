@@ -11,18 +11,18 @@ services:
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
 
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    depends_on:
-      - elasticsearch
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    volumes:
-      - ./api:/app
+  # api:
+  #   build:
+  #     context: ./api
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - elasticsearch
+  #   environment:
+  #     - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #   volumes:
+  #     - ./api:/app
 
   client:
     build:
