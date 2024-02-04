@@ -141,108 +141,6 @@ def get_all_articles():
 
     #------------------------------------ ADD PUT DELETE-------------------------------------
 
-#add article
-@jwt_required()
-def add_article():
-    data = request.json
-
-    # Check if all required fields are present in the request data
-    required_fields = ['title', 'abstract', 'full_text', 'authors', 'keywords', 'references']
-    missing_fields = [field for field in required_fields if field not in data]
-    if missing_fields:
-        return jsonify({'error': f"Missing required fields: {', '.join(missing_fields)}"}), 400
-    
-    current_date = datetime.utcnow()  # Utilize datetime.now() if you prefer the local time
-
-    new_article = Article(
-        title=data['title'],
-        abstract=data['abstract'],
-        full_text=data['full_text'],
-        pdf_url=data.get('pdf_url'),  # optional field
-        date=current_date
-    )
-    db.session.add(new_article)
-    db.session.flush()
-
-    # Add authors and their institutions
-    for author_data in data['authors']:
-        author = Author(
-            name=author_data['name'],
-            email=author_data['email']
-        )
-        db.session.add(author)
-        db.session.flush()
-
-        # Check if author has institutions specified
-        if 'institutions' not in author_data or not author_data['institutions']:
-            db.session.rollback()
-            return jsonify({'error': "Each author must have at least one institution specified"}), 400
-
-        for institution_info in author_data['institutions']:
-            institution = Institution(institution_name=institution_info['institution_name'])
-            db.session.add(institution)
-            db.session.flush()
-
-            author_institution = AuthorInstitution(author_id=author.id, institution_id=institution.id)
-            db.session.add(author_institution)
-
-        # Create relation between article and author
-        relation = ArticleAuthor(article_id=new_article.id, author_id=author.id)
-        db.session.add(relation)
-
-    # Add keywords
-    for keyword_data in data['keywords']:
-        keyword = Keyword(keyword=keyword_data)
-        db.session.add(keyword)
-        db.session.flush()
-
-        relation = ArticleKeyword(article_id=new_article.id, keyword_id=keyword.id)
-        db.session.add(relation)
-
-    # Add references
-    for reference_data in data['references']:
-        reference = BibliographicReference(reference=reference_data)
-        db.session.add(reference)
-        db.session.flush()
-
-        relation = ArticleReference(article_id=new_article.id, reference_id=reference.id)
-        db.session.add(relation)
-
-    try:
-        db.session.commit()
-                # Si la base de données est mise à jour avec succès, essayez d'indexer l'article dans Elasticsearch
-        try:
-            response = es.index(index='articles_index', body={
-                "title": data.get('title', ''),
-                "abstract": data.get('abstract', ''),
-                "full_text": data.get('full_text', ''),
-                "keywords": data.get('keywords', []),
-                "pdf_url": data.get('pdf_url', ''),
-                "references": data.get('references', []),
-                "date": data.get('date', ''),
-                "authors": data.get('authors', []),
-                "institution_names": [inst.get('institution_name', '') for author in data.get('authors', []) for inst in author.get('institutions', []) if inst.get('institution_name', '')]
-                # Vous pouvez ajouter d'autres champs si nécessaire
-            })
-            elasticsearch_id = response['_id']
-
-            # Ajoutez une entrée dans la table de correspondance
-            mapping_entry = ArticleElasticsearchMapping(article_id=new_article.id, elasticsearch_id=elasticsearch_id)
-            db.session.add(mapping_entry)
-            db.session.commit()
-            return jsonify({"message": "Article added and indexed successfully!"}), 201
-        except Exception as es_error:
-            # Si l'indexation dans Elasticsearch échoue, faites un rollback de la transaction de la base de données
-            db.session.rollback()
-            return jsonify({"error": f"Failed to index the article in Elasticsearch: {str(es_error)}"}), 500
-
-    except Exception as db_error:
-        # Si la mise à jour de la base de données échoue, renvoyez une erreur appropriée
-        db.session.rollback()
-        return jsonify({'error': f"Failed to add the article to the database: {str(db_error)}"}), 500
-    
-
-
 
 @jwt_required()
 def edit_article(article_id):
@@ -258,8 +156,8 @@ def edit_article(article_id):
         article.title = request.json.get('title', article.title)
         article.abstract = request.json.get('abstract', article.abstract)
         article.full_text = request.json.get('full_text', article.full_text)
-        article.pdf_url = request.json.get('pdf_url', article.pdf_url)
-
+        # article.pdf_url = request.json.get('pdf_url', article.pdf_url)
+    
         # Update other attributes
         article.references = []
 
@@ -299,12 +197,17 @@ def edit_article(article_id):
 
             article.authors.append(author)
 
+        article.pdf_url = generate_pdf(article)
         # Save the updated article
         db.session.commit()
 
+        mapping_entry = ArticleElasticsearchMapping.query.filter_by(article_id=article.id).first()
+        if mapping_entry:
+            elasticsearch_id = mapping_entry.elasticsearch_id
         # Update the corresponding Elasticsearch index
         try:
-            es.update(index='articles_index', id=article.elasticsearch_mapping[0].elasticsearch_id, body={
+            # mapping_entry = ArticleElasticsearchMapping(article_id=new_article.id, elasticsearch_id=elasticsearch_id)
+            es.update(index='articles_index', id=elasticsearch_id, body={
                 "doc": {
                     "title": article.title,
                     "abstract": article.abstract,
@@ -328,6 +231,7 @@ def edit_article(article_id):
         )
         db.session.add(edit)
         db.session.commit()
+
 
         return jsonify({'message': 'Article edited successfully'})
 
