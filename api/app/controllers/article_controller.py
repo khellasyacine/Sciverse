@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import ForeignKey
+from app.controllers.pdf_controller import generate_pdf
 from app.models import *
 from app import db
 from app import login_manager

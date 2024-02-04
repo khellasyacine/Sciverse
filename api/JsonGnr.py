@@ -3,13 +3,35 @@ import xml.etree.ElementTree as ET
 import json
 import os
 
+from grobid_client_python.finale import parse_xml_to_json
+
+
+# def create_directory_if_not_exists(directory):
+#     # Obtenez le chemin absolu du répertoire en utilisant os.path.abspath
+#     abs_directory = os.path.abspath(directory)
+    
+#     # Vérifiez si le répertoire existe
+#     if not os.path.exists(abs_directory):
+#         os.makedirs(abs_directory)
+#         print(f"Le répertoire {abs_directory} a été créé avec succès.")
+#     else:
+#         print(f"Le répertoire {abs_directory} existe déjà.")
+
+# # Exemple d'utilisation
+# directory_path = "./tests/test_out"
+# create_directory_if_not_exists(directory_path)
+
+
+
 
 
 def JsonGenr(pdf_path,article_name):
 
+    config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'grobid_client_python'))
+    config_path = os.path.join(config_dir, 'config.json')
 
-    client = GrobidClient(config_path="./grobid_client_python/config.json")
-    client.process("processFulltextDocument", pdf_path, output="./tests/test_out/", consolidate_citations=False, tei_coordinates=True, force=False)
+    client = GrobidClient(config_path=config_path)
+    client.process("processFulltextDocument", pdf_path, output="./tests/test_out", consolidate_citations=False, tei_coordinates=True, force=False)
     def parse_xml(xml_path):
         tree = ET.parse(xml_path)
         root = tree.getroot()
@@ -90,3 +112,69 @@ def JsonGenr(pdf_path,article_name):
     return json_data
 
 
+# pdf_path = 'grobid_client_python/tests/test_pdf' 
+# article_name = 'Article_10' # Update with relative path
+# data = JsonGenr(pdf_path,article_name)
+# print(data)
+
+
+# def JsonGenr(pdf_path, article_name):
+#     # Chemin vers le répertoire de sortie
+#     output_dir = "api/tests/test_out"
+
+#     # Créer le répertoire de sortie s'il n'existe pas déjà
+#     if not os.path.exists(output_dir):
+#         os.makedirs(output_dir)
+
+#     config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'grobid_client_python'))
+#     config_path = os.path.join(config_dir, 'config.json')
+
+#     client = GrobidClient(config_path=config_path)
+#     client.process("processFulltextDocument", pdf_path, output=output_dir, consolidate_citations=False, tei_coordinates=True, force=False)
+
+#     # Chemin vers le fichier XML généré
+#     xml_filename = f"{article_name}.grobid.tei.xml"
+#     xml_path = os.path.join(output_dir, xml_filename)
+
+#     # Chemin vers le fichier JSON de sortie
+#     json_filename = "Jsonfile.json"
+#     json_path = os.path.join(output_dir, json_filename)
+
+#     # Convertir le fichier XML en JSON
+#     json_data = parse_xml_to_json(xml_path, json_path)
+
+#     return json_data
+
+
+
+# def JsonGenr(pdf_path, article_name):
+#     config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'grobid_client_python'))
+#     config_path = os.path.join(config_dir, 'config.json')
+
+#     # Corrected output directory path
+#     output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tests', 'test_out'))
+
+#     client = GrobidClient(config_path=config_path)
+
+#     # Corrected output parameter to be a directory path
+#     client.process("processFulltextDocument", pdf_path, output=output_dir, consolidate_citations=False, tei_coordinates=True, force=False)
+
+#     def parse_xml(xml_path):
+#         tree = ET.parse(xml_path)
+#         root = tree.getroot()
+#         return root
+
+#     # Rest of your code...
+
+#     # Corrected XML and JSON paths
+#     xml_filename = f"{article_name}.grobid.tei.xml"
+#     xml_path = os.path.join(output_dir, xml_filename)
+    
+#     json_path = os.path.join(output_dir, "Jsonfile.json")
+#     json_data = parse_xml_to_json(xml_path, json_path)
+
+#     # Remove the XML file
+#     # os.remove(xml_path)
+#     # os.remove(json_path)
+
+#     return json_data
