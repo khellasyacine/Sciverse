@@ -2,10 +2,10 @@ import danger from './Vector.png';
 
 function PopLogOut(Close) {
   return (
-    <div className='h-full w-full flex justif-center bg-slate-500 absolute'>
-        <div className='lg:h-[250px] h-[210px] w-[450px] bg-white border-none py-2 rounded-[20px] flex flex-col justify-evenly content-center flex-wrap'>
-            <div className='flex justify-center lg:h-16 h-12'>
-                <img src={danger} alt="danger logo" />
+    <div className='h-full w-full bg-black bg-opacity-30 absolute flex justify-center content-center flex-wrap'>
+        <div className='lg:h-[250px] sm:h-[230px] h-[200px] sm:w-[450px] w-[300px] bg-white border-none py-2 rounded-[20px] flex flex-col justify-evenly content-center flex-wrap relative'>
+            <div className='flex justify-center lg:h-16 h-10'>
+                <FaExclamationTriangle className="sm:h-16 h-12 sm:w-16 w-12"/>
             </div>
             <div className='flex justify-center'>
                 <p className='lg:text-lg font-poppins font-medium lg:w-96 w-80 lg:px-0 px-2 text-center'>Etes-vous sur de vouloir vouloir supprimer definitivement cet moderateur ?</p>
