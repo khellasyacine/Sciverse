@@ -81,7 +81,7 @@ function ArticleDetails() {
           <div className="flex content-center flex-nowrap my-3">
             <LiaPenFancySolid className="h-6 w-6 mr-1" />
             <p className="text-[#190B28] text-basefont-semibold mr-1">
-              Mots clés:
+              References:
             </p>
             <p className="text-[#190B28] text-base">
               {article.references.map((reference) => {
