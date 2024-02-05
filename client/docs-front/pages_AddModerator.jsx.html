@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/AddModerator.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/AddModerator.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Component for adding a new moderator.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered JSX element.
+ */
+const AddModerator = () => {
+  // Initialize necessary hooks and states
+  const navigate = useNavigate();
+  const { userProfile } = useContext(UserContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isOpenNature, setIsOpenNature] = useState(false);
+  const [isOpenField, setIsOpenField] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [data, setData] = useState({
+    firstName: "",
+    lastName: "",
+    nature: "",
+    field: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  /**
+   * Toggle password visibility.
+   *
+   * @function
+   * @returns {void}
+   */
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  /**
+   * Toggle confirm password visibility.
+   *
+   * @function
+   * @returns {void}
+   */
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  /**
+   * Toggle nature dropdown list visibility.
+   *
+   * @function
+   * @returns {void}
+   */
+  const toggleListNature = () => {
+    setIsOpenNature(!isOpenNature);
+  };
+
+  /**
+   * Toggle field dropdown list visibility.
+   *
+   * @function
+   * @returns {void}
+   */
+  const toggleListField = () => {
+    setIsOpenField(!isOpenField);
+  };
+
+  /**
+   * Handle input changes.
+   *
+   * @function
+   * @param {Object} e - Event object.
+   * @returns {void}
+   */
+  const handleChange = (e) => {
+    setData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  /**
+   * Handle form submission.
+   *
+   * @function
+   * @param {Object} event - Event object.
+   * @returns {void}
+   */
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // Check if passwords match
+    if (data.password !== data.confirmPassword)
+      alert("Passwords do not match. Please re-enter your password.");
+    else {
+      try {
+        // Send moderator creation request to the server
+        const response = await axios.post(
+          "http://127.0.0.1:5000/moderator/create",
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${userProfile.access_token}`,
+            },
+          }
+        );
+        if (response.data.error) {
+          alert("Error: " + response.data.error);
+        } else {
+          setFormSubmitted(true);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        // Handle different error scenarios
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+          console.log("Response status:", error.response.status);
+          console.log("Response headers:", error.response.headers);
+          if (error.response.status === 401) {
+            alert("Unauthorized: Please check your credentials.");
+          } else {
+            alert("An error occurred. Please try again later.");
+          }
+        } else if (error.request) {
+          console.error("No response received. Request:", error.request);
+          alert(
+            "No response received from the server. Please try again later."
+          );
+        } else {
+          console.error("Error message:", error.message);
+          alert("An unexpected error occurred. Please try again later.");
+        }
+      }
+    }
+  };
+
+  // Handle form submission success
+  useEffect(() => {
+    if (formSubmitted) alert("Moderator added successfully");
+  }, [formSubmitted]);
+
+  /**
+   * Handle cancellation.
+   *
+   * @function
+   * @param {Object} event - Event object.
+   * @returns {void}
+   */
+  const handleAnnuler = (event) => {
+    event.preventDefault();
+    navigate(-1);
+  };
+
+  // Render the JSX structure
+  return (
+    &lt;div className="w-full h-fit relative flex justify-start items-center flex-col bg-grey pt-4 max-md:pt-2">
+      &lt;div className="flex flex-row w-1/2 justify-center items-center py-2 ">
+        &lt;form
+          className="flex flex-col w-full justify-center items-center gap-4"
+          onSubmit={handleSubmit}
+        >
+          {/* ********** full name input ********** */}
+          &lt;div className="flex flew-row justify-center items-center w-full gap-3">
+            &lt;div className="flex flex-1 flex-col">
+              &lt;label className="font-poppins text-xs pl-1 text-[#190B28] my-1">
+                First Name:
+              &lt;/label>
+              &lt;input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={data.firstName}
+                onChange={handleChange}
+                required
+                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+                placeholder="Enter your first name"
+              />
+            &lt;/div>
+
+            &lt;div className="flex flex-1 flex-col">
+              &lt;label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
+                Last Name:
+              &lt;/label>
+              &lt;input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={data.lastName}
+                onChange={handleChange}
+                required
+                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+                placeholder="Enter your last name"
+              />
+            &lt;/div>
+          &lt;/div>
+          {/* ************************************* */}
+          {/* ********* Nature input ********** */}
+          &lt;div className="flex w-full flex-col">
+            &lt;label className="block mb-1 ml-2 text-sm font-poppins font-medium opacity-50">
+              Profession:
+            &lt;/label>
+            &lt;div className="flex flew-row justify-center items-center w-full gap-3">
+              &lt;div className="relative flex-1">
+                &lt;div>
+                  &lt;select
+                    name="nature"
+                    id="nature"
+                    onClick={toggleListNature}
+                    value={data.nature}
+                    onChange={handleChange}
+                    required
+                    className="register-input appearance-none signup-select"
+                  >
+                    &lt;option value={""} key={null}>
+                      You are a ...
+                    &lt;/option>
+                    {optionsNature.map((nature) => {
+                      return (
+                        &lt;option value={nature.value} key={nature.label}>
+                          {nature.label}
+                        &lt;/option>
+                      );
+                    })}
+                  &lt;/select>
+                  {isOpenNature ? (
+                    &lt;FaAngleUp className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  ) : (
+                    &lt;FaAngleDown className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  )}
+                &lt;/div>
+              &lt;/div>
+
+              &lt;div className="relative flex-1">
+                &lt;div>
+                  &lt;select
+                    name="field"
+                    id="field"
+                    required
+                    value={data.field}
+                    onClick={toggleListField}
+                    onChange={handleChange}
+                    className="register-input appearance-none signup-select"
+                  >
+                    &lt;option value={""} key={null}>
+                      Field
+                    &lt;/option>
+                    {optionsField.map((field) => {
+                      return (
+                        &lt;option value={field.value} key={field.label}>
+                          {field.label}
+                        &lt;/option>
+                      );
+                    })}
+                  &lt;/select>
+                  {isOpenField ? (
+                    &lt;FaAngleUp className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  ) : (
+                    &lt;FaAngleDown className="absolute top-3.5 right-0 mr-4 text-slate-500" />
+                  )}
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+          {/* ************************************* */}
+          {/* ************ email input ************ */}
+          &lt;div className="flex w-full flex-col">
+            &lt;label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
+              Email adress:
+            &lt;/label>
+            &lt;input
+              type="text"
+              id="email"
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              required
+              className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+              placeholder="Enter your email address"
+            />
+          &lt;/div>
+          {/* ************************************* */}
+          {/* *********** password input ********** */}
+          &lt;div className="flex w-full flex-col">
+            &lt;label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
+              Password:
+            &lt;/label>
+            &lt;div className="relative flex w-full">
+              &lt;input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+                required
+                placeholder="Enter your password"
+                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+              />
+              &lt;div
+                onClick={togglePasswordVisibility}
+                className={`absolute inset-y-0 right-0 flex items-center mr-6 text-gray-500 cursor-pointer`}
+              >
+                {showPassword ? (
+                  &lt;FaEyeSlash className="text-black text-opacity-90 h-4 w-4" />
+                ) : (
+                  &lt;FaEye className="text-black text-opacity-90 h-4 w-4" />
+                )}
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+          {/* ************************************* */}
+          {/* ******* confirm password input ****** */}
+          &lt;div className="flex w-full flex-col">
+            &lt;label className=" font-poppins text-xs pl-1 text-[#190B28] my-1  ">
+              Confirm Password:
+            &lt;/label>
+            &lt;div className="relative flex w-full">
+              &lt;input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={data.confirmPassword}
+                onChange={handleChange}
+                required
+                placeholder="Confirm your password"
+                className="py-2.5 px-6 w-full rounded-full bordre-none bg-[#E87D00] bg-opacity-[15%] text-base text-black text-opacity-100"
+              />
+              &lt;div
+                onClick={toggleConfirmPasswordVisibility}
+                className={`absolute inset-y-0 right-0 flex items-center mr-6 text-gray-500 cursor-pointer`}
+              >
+                {showConfirmPassword ? (
+                  &lt;FaEyeSlash className="text-black text-opacity-90 h-4 w-4" />
+                ) : (
+                  &lt;FaEye className="text-black text-opacity-90 h-4 w-4" />
+                )}
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+          {/* ************************************* */}
+          &lt;div className="w-full flex justify-center items-center gap-6 mt-2 bg-grey">
+            &lt;button
+              onClick={handleAnnuler}
+              className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-10 px-7 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#A7A7A7]"
+            >
+              Annuler
+            &lt;/button>
+            &lt;button
+              type="submit"
+              className="lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-5 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#E87D00]"
+            >
+              Continue
+            &lt;/button>
+          &lt;/div>
+        &lt;/form>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default AddModerator;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddArticleBtn">AddArticleBtn</a></li><li><a href="global.html#AddModerator">AddModerator</a></li><li><a href="global.html#AddModeratorBtn">AddModeratorBtn</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Article">Article</a></li><li><a href="global.html#ArticleCard">ArticleCard</a></li><li><a href="global.html#ArticleDetails">ArticleDetails</a></li><li><a href="global.html#AuthPagesBg">AuthPagesBg</a></li><li><a href="global.html#BackToMenuBtn">BackToMenuBtn</a></li><li><a href="global.html#Card">Card</a></li><li><a href="global.html#EditArticle">EditArticle</a></li><li><a href="global.html#EditArticleBtn">EditArticleBtn</a></li><li><a href="global.html#EditModerateur">EditModerateur</a></li><li><a href="global.html#EditPassword">EditPassword</a></li><li><a href="global.html#Error404">Error404</a></li><li><a href="global.html#Favorite">Favorite</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Moderateurs">Moderateurs</a></li><li><a href="global.html#ModifierModerateur">ModifierModerateur</a></li><li><a href="global.html#ModifierMotDePasse">ModifierMotDePasse</a></li><li><a href="global.html#PopDeleteModer">PopDeleteModer</a></li><li><a href="global.html#PopLogOut">PopLogOut</a></li><li><a href="global.html#PopModifierArticle">PopModifierArticle</a></li><li><a href="global.html#PopModifierModerateur">PopModifierModerateur</a></li><li><a href="global.html#PopModifierMotDePasseERR">PopModifierMotDePasseERR</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#ProfileButton">ProfileButton</a></li><li><a href="global.html#SideMenu">SideMenu</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Feb 04 2024 01:51:39 GMT+0100 (heure normale d’Afrique de l’Ouest)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

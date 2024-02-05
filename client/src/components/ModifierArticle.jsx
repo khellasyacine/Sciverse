@@ -17,19 +17,10 @@ function ArticleDetails() {
       .map((element) => element.trim());
 
     const filteredElements = elements.filter((element) => element !== "");
-    console.log(filteredElements);
     return filteredElements;
   };
 
   const joinArrayDelimiter = (arr) => arr.join(", ");
-
-  // const keywordsValues = ArticleDisplay.keywords?.map(
-  //   (keywordObject) => keywordObject.keyword
-  // );
-
-  // const referencesValues = ArticleDisplay.references?.map(
-  //   (referenceObject) => referenceObject.reference
-  // );
 
   const [keywordsInput, setKeyWordsInput] = useState(
     joinArrayDelimiter(ArticleDisplay.keywords)
@@ -48,14 +39,23 @@ function ArticleDetails() {
     }));
   };
 
-  const handleKeywordsChange = (event) => {
+  const handleKeywordsChange = async (event) => {
     setKeyWordsInput(event.target.value);
-    console.log("Key : " + keywordsInput);
+    const keywordsTable = await handleAddRow(keywordsInput);
+    setData((prevData) => ({
+      ...prevData,
+      keywords: keywordsTable,
+    }));
   };
 
-  const handleReferencesChange = (event) => {
+  const handleReferencesChange = async (event) => {
     setReferencesInput(event.target.value);
-    console.log("reference : " + referencesInput);
+    const referencesTable = await handleAddRow(referencesInput);
+
+    setData((prevData) => ({
+      ...prevData,
+      references: referencesTable,
+    }));
   };
 
   useEffect(() => {
@@ -107,14 +107,6 @@ function ArticleDetails() {
     event.preventDefault();
 
     try {
-      const keywordsTable = await handleAddRow(keywordsInput);
-      const referencesTable = await handleAddRow(referencesInput);
-
-      setData({
-        ...data,
-        keywords: keywordsTable,
-        references: referencesTable,
-      });
       const response = await axios.put(
         `http://127.0.0.1:5000/article/edit/${ArticleDisplay.id}`,
         data,

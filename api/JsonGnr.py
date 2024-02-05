@@ -108,9 +108,9 @@ def JsonGenr(pdf_path,article_name):
     pdf_path = os.path.join(pdf_path, article_name)
 
     # Remove the XML file
-    os.remove(xml_path)
-    os.remove(json_path)
-    os.remove(pdf_path)
+    # os.remove(xml_path)
+    # os.remove(json_path)
+    # os.remove(pdf_path)
 
     return json_data
 

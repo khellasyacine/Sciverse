@@ -162,47 +162,25 @@ def edit_article(article_id):
         if 'full_text' in request.json and request.json['full_text'] != "":
             article.full_text = request.json['full_text']
 
-        # Handle addition and deletion of keywords
         if 'keywords' in request.json:
-            new_keywords = request.json['keywords']
-            current_keywords = [keyword.keyword for keyword in article.keywords]
-
-            # Keywords to add
-            for keyword_data in new_keywords:
-                if keyword_data and keyword_data not in current_keywords:
+            article.keywords = []  # Clear the current list of keywords
+            for keyword_data in request.json['keywords']:
+                if keyword_data:
                     keyword = Keyword.query.filter_by(keyword=keyword_data).first()
                     if not keyword:
                         keyword = Keyword(keyword=keyword_data)
                         db.session.add(keyword)
                     article.keywords.append(keyword)
 
-            # Keywords to delete
-            for keyword_data in current_keywords:
-                if keyword_data not in new_keywords:
-                    keyword = Keyword.query.filter_by(keyword=keyword_data).first()
-                    if keyword:
-                        article.keywords.remove(keyword)
-
-        # Handle addition and deletion of references
         if 'references' in request.json:
-            new_references = request.json['references']
-            current_references = [reference.reference for reference in article.references]
-
-            # references to add
-            for reference_data in new_references:
-                if reference_data and reference_data not in current_references:
+            article.references = []  # Clear the current list of references
+            for reference_data in request.json['references']:
+                if reference_data:
                     reference = BibliographicReference.query.filter_by(reference=reference_data).first()
                     if not reference:
                         reference = BibliographicReference(reference=reference_data)
                         db.session.add(reference)
-                    article.keywords.append(reference)
-
-            # references to delete
-            for reference_data in current_references:
-                if reference_data not in new_references:
-                    reference = BibliographicReference.query.filter_by(reference=reference_data).first()
-                    if reference:
-                        article.references.remove(reference)
+                    article.references.append(reference)
 
 
         # Save the updated article if any change is made

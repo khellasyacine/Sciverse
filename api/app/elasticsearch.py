@@ -15,7 +15,7 @@ def search_article():
         return jsonify({"error": "Invalid request data."}), 400
 
     queries = data['queries']
-    must_conditions = []
+    should_conditions = []
 
     # For each term and field specified by the user
     for query in queries:
@@ -24,7 +24,7 @@ def search_article():
         # If the field is "authors", we need to handle it differently
         if field == 'authors':
             # Search for the term in author names and institution names
-            must_conditions.append({
+            should_conditions.append({
                 'bool': {
                     'should': [
                         {'match': {'authors.name': term}},
@@ -34,7 +34,7 @@ def search_article():
             })
         else:
             # If it's not "authors"
-            must_conditions.append({
+            should_conditions.append({
                 'multi_match': {
                     'query': term,
                     'fields': [field]
@@ -51,7 +51,7 @@ def search_article():
         response = es.search(index='articles_index', body={
             'query': {
                 'bool': {
-                    'must': must_conditions
+                    'should': should_conditions
                 }
             }
         })

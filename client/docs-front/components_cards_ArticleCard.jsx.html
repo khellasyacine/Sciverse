@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/cards/ArticleCard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/cards/ArticleCard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { getAuteurInstitus } from "../../functions/articleFct";
+import React, { useContext, useEffect, useState } from "react";
+import { IoStar } from "react-icons/io5";
+import { routes } from "../../routes/routes";
+import { useNavigate } from "react-router-dom";
+import { ArticleContext } from "../../contexts/ArticleContext";
+import axios from "axios";
+import { UserContext } from "../../contexts/UserContext";
+
+/**
+ * ArticleCard component displays information about an article.
+ *
+ * @component
+ * @param {Object} article - The article object with details.
+ * @returns {JSX.Element} The rendered JSX element.
+ */
+function ArticleCard({ article }) {
+  /**
+   * ArticleContext for accessing and updating article-related information.
+   *
+   * @type {Object}
+   */
+  const { setArticleDisplay } = useContext(ArticleContext);
+
+  /**
+   * UserContext for accessing user-related information and actions.
+   *
+   * @type {Object}
+   */
+  const { userProfile } = useContext(UserContext);
+
+  /**
+   * State to track whether the article is marked as a favorite.
+   *
+   * @type {boolean}
+   */
+  const [favorite, setFavorite] = useState(article.is_favorite);
+
+  /**
+   * React Router's useNavigate hook for programmatic navigation.
+   *
+   * @type {Function}
+   */
+  const Navigate = useNavigate();
+
+  /**
+   * Handles the favorite button click.
+   *
+   * @async
+   */
+  const handleFavorite = async () => {
+    // Code for handling favorites
+  };
+
+  return (
+    &lt;div className="w-full flex flex-col justify-start font-poppins bg-grey">
+      &lt;div className="relative h-full w-[97.5%] bg-white mx-4 mb-4 rounded-3xl py-3 lg:px-7 px-3 flex justify-center flex-col max-md:mx-2 max-md:mb-2.5 2xl:w-[98.25%]">
+        {/* Favorite Star */}
+        &lt;div
+          onClick={handleFavorite}
+          className={`absolute top-4 right-4 flex items-center cursor-pointer ${
+            favorite ? "text-orange" : "text-gray-500"
+          }`}
+        >
+          &lt;IoStar className="w-5 h-5" />
+        &lt;/div>
+
+        {/* Article Title */}
+        &lt;p className="text-xl font-medium max-md:text-lg">{article.title}&lt;/p>
+
+        {/* Authors and Institutions */}
+        &lt;p className="text-xs mb-2.5 text-justify max-sm:max-w-[350px] max-md:max-w-md">
+          {article.authors.map((author, index) => (
+            &lt;React.Fragment key={index}>
+              {getAuteurInstitus(author)}
+              {index !== article.authors.length - 1 &amp;&amp; &lt;br />}
+            &lt;/React.Fragment>
+          ))}
+        &lt;/p>
+
+        {/* Article Abstract */}
+        &lt;p className="lg:text-[16px] max-h-20 overflow-hidden text-sm line-clamp-3 text-justify max-sm:max-w-xs max-sm:line-clamp-4 max-md:max-w-md">
+          Resumé : {article.abstract}{" "}
+        &lt;/p>
+
+        {/* Keywords */}
+        &lt;div className="lg:h-1/4 sm:h-1/5 mt-2 w-full flex justify-between items-center max-sm:justify-end">
+          &lt;div className="flex sm:w-[60.5%] w-1/3 overflow-hidden flex-row shrink-0 h-full max-sm:hidden py-2 items-center">
+            {article.keywords.map((mot, index) => {
+              return (
+                &lt;div
+                  key={index}
+                  className="bg-grey lg:py-2 py-1 lg:px-5 px-3 rounded-full text-xs mr-1.5 shrink-0 flex items-center"
+                >
+                  {mot}
+                &lt;/div>
+              );
+            })}
+          &lt;/div>
+
+          {/* Download and Details Buttons */}
+          &lt;div className=" flex flex-row shrink-0 items-center">
+            &lt;button className="hover:opacity-80 hover:transition-all hover:duration-150 hover:ease-in font-semibold bg-white py-2.5 lg:px-5 px-3 rounded-xl border-2 border-black lg:text-sm text-xs mx-1 shrink-0">
+              Download
+            &lt;/button>
+            &lt;button
+              onClick={() => {
+                setArticleDisplay(article);
+                Navigate(routes.ARTICLE);
+              }}
+              className="hover:opacity-80 hover:transition-all hover:duration-150 hover:ease-in font-semibold bg-[#E87D00] text-white py-3 lg:px-7 px-6 rounded-xl lg:text-sm text-xs mx-1 shrink-0"
+            >
+              Details
+            &lt;/button>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+}
+
+export default ArticleCard;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddArticleBtn">AddArticleBtn</a></li><li><a href="global.html#AddModerator">AddModerator</a></li><li><a href="global.html#AddModeratorBtn">AddModeratorBtn</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Article">Article</a></li><li><a href="global.html#ArticleCard">ArticleCard</a></li><li><a href="global.html#ArticleDetails">ArticleDetails</a></li><li><a href="global.html#AuthPagesBg">AuthPagesBg</a></li><li><a href="global.html#BackToMenuBtn">BackToMenuBtn</a></li><li><a href="global.html#Card">Card</a></li><li><a href="global.html#EditArticle">EditArticle</a></li><li><a href="global.html#EditArticleBtn">EditArticleBtn</a></li><li><a href="global.html#EditModerateur">EditModerateur</a></li><li><a href="global.html#EditPassword">EditPassword</a></li><li><a href="global.html#Error404">Error404</a></li><li><a href="global.html#Favorite">Favorite</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Moderateurs">Moderateurs</a></li><li><a href="global.html#ModifierModerateur">ModifierModerateur</a></li><li><a href="global.html#ModifierMotDePasse">ModifierMotDePasse</a></li><li><a href="global.html#PopDeleteModer">PopDeleteModer</a></li><li><a href="global.html#PopLogOut">PopLogOut</a></li><li><a href="global.html#PopModifierArticle">PopModifierArticle</a></li><li><a href="global.html#PopModifierModerateur">PopModifierModerateur</a></li><li><a href="global.html#PopModifierMotDePasseERR">PopModifierMotDePasseERR</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#ProfileButton">ProfileButton</a></li><li><a href="global.html#SideMenu">SideMenu</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Feb 04 2024 01:51:39 GMT+0100 (heure normale d’Afrique de l’Ouest)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

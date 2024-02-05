@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ModifierMotDePasse.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ModifierMotDePasse.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState } from "react";
+import Pop from "./popUps/PopModifierMotDePasseERR.jsx";
+import { useNavigate } from "react-router-dom";
+
+/**
+ * ModifierMotDePasse component allows changing the user's password.
+ *
+ * @component
+ * @example
+ * &lt;ModifierMotDePasse />
+ */
+function ModifierMotDePasse() {
+  const [mdp, Setmdp] = useState("");
+  const [mdpc, Setmdpc] = useState("");
+
+  const navigate = useNavigate();
+
+  const [Display, SetDisplay] = useState(false);
+
+  /**
+   * Closes the error popup.
+   */
+  const Close = () => {
+    SetDisplay(false);
+    Setmdp("");
+    Setmdpc("");
+  };
+
+  /**
+   * Handles changes in the new password input.
+   * @param {Object} event - The input change event.
+   */
+  const handleChangeMdp = (event) => {
+    Setmdp(event.target.value);
+  };
+
+  /**
+   * Handles changes in the confirmation password input.
+   * @param {Object} event - The input change event.
+   */
+  const handleChangeMdpc = (event) => {
+    Setmdpc(event.target.value);
+  };
+
+  /**
+   * Verifies if the new password and confirmation password match.
+   * @param {string} mdp1 - The new password.
+   * @param {string} mdp2 - The confirmation password.
+   * @returns {boolean} - True if passwords match, false otherwise.
+   */
+  const verifyMdp = (mdp1, mdp2) => {
+    return mdp1 === mdp2;
+  };
+
+  /**
+   * Handles the form submission.
+   * @param {Object} event - The form submission event.
+   */
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!verifyMdp(mdp, mdpc)) {
+      SetDisplay(!Display);
+    }
+    // Additional logic for password change
+  };
+
+  /**
+   * Handles the "Annuler" button click.
+   * @param {Object} event - The button click event.
+   */
+  const handleAnnuler = (event) => {
+    event.preventDefault();
+    navigate(-1);
+  };
+
+  return (
+    &lt;div className="w-full relative h-full">
+      {Display &amp;&amp; &lt;Pop Close={Close} />}
+      &lt;div className="w-full py-4 px-6 flex flex-col flex-wrap justify-center content-center bg-[#dedede] font-poppins">
+        &lt;form autoComplete="off" action="post" className="w-full flex flex-col flex-wrap justify-center content-center">
+          {/* ... Your form inputs and labels ... */}
+          &lt;div className='flex justify-evenly mb-4 sm:mt-0 mt-4'>
+            &lt;button onClick={handleAnnuler} className='lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-5 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#A7A7A7]'>Annuler&lt;/button>
+            &lt;button onClick={handleSubmit} className='lg:text-lg text-sm font-poppins font-bold text-white lg:py-2.5 py-2 lg:px-6 px-5 rounded-[20px] shadow-md shadow-[rgba(0,0,0,0.25)] bg-[#E87D00]'>Enregistrer&lt;/button>
+          &lt;/div>
+        &lt;/form>
+      &lt;/div>
+    &lt;/div>
+  );
+}
+
+export default ModifierMotDePasse;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddArticleBtn">AddArticleBtn</a></li><li><a href="global.html#AddModerator">AddModerator</a></li><li><a href="global.html#AddModeratorBtn">AddModeratorBtn</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Article">Article</a></li><li><a href="global.html#ArticleCard">ArticleCard</a></li><li><a href="global.html#ArticleDetails">ArticleDetails</a></li><li><a href="global.html#AuthPagesBg">AuthPagesBg</a></li><li><a href="global.html#BackToMenuBtn">BackToMenuBtn</a></li><li><a href="global.html#Card">Card</a></li><li><a href="global.html#EditArticle">EditArticle</a></li><li><a href="global.html#EditArticleBtn">EditArticleBtn</a></li><li><a href="global.html#EditModerateur">EditModerateur</a></li><li><a href="global.html#EditPassword">EditPassword</a></li><li><a href="global.html#Error404">Error404</a></li><li><a href="global.html#Favorite">Favorite</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Moderateurs">Moderateurs</a></li><li><a href="global.html#ModifierModerateur">ModifierModerateur</a></li><li><a href="global.html#ModifierMotDePasse">ModifierMotDePasse</a></li><li><a href="global.html#PopDeleteModer">PopDeleteModer</a></li><li><a href="global.html#PopLogOut">PopLogOut</a></li><li><a href="global.html#PopModifierArticle">PopModifierArticle</a></li><li><a href="global.html#PopModifierModerateur">PopModifierModerateur</a></li><li><a href="global.html#PopModifierMotDePasseERR">PopModifierMotDePasseERR</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#ProfileButton">ProfileButton</a></li><li><a href="global.html#SideMenu">SideMenu</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Feb 04 2024 01:51:39 GMT+0100 (heure normale d’Afrique de l’Ouest)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

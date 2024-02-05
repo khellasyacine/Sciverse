@@ -3,10 +3,10 @@ from copy import deepcopy
 import json
 import requests
 
-try:
-    from urlparse import urljoin
-except ImportError:
-    from urllib.parse import urljoin
+# try:
+#     from urlparse import urljoin
+# except ImportError:
+from urllib.parse import urljoin, urlparse
 
 
 class ApiClient(object):

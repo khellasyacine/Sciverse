@@ -1,0 +1,29 @@
+#SCIVERSE
+
+
+Installation
+Clone the repository:
+
+git clone https://github.com/yacine1240/Sciverse.git
+
+
+#RUN THES COMMANDS:
+cd Sciverse
+
+#CREATE A NEW DB : 
+
+flask db init  #add at first "pyhton -m" if it doesnt work
+flask db migrate -m "Initial migration"
+flask db upgrade 
+
+#TO RUN ELASTICSEARCH - CLIENT - GROBID :
+docker-compose up --build 
+
+#TO RUN SERVER (it is not included in DOCKER)
+cd api
+python -u run.py
+
+
+
+Open your web browser and go to http://localhost:5173/
+

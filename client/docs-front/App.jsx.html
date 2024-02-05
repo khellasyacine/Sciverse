@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import Header from "./pages/Header";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import { AnimatePresence } from "framer-motion";
+import Layout from "./components/layout/Layout";
+import { UserContext, UserProvider } from "./contexts/UserContext";
+import PrivateRoute from "./routes/PrivateRoute";
+import { routes } from "./routes/routes";
+import Error404 from "./components/layout/Error404";
+import Home from "./pages/Home";
+import { useContext } from "react";
+import AddArticleBtn from "./components/buttons/AddArticleBtn";
+import Moderateurs from "./pages/Moderateurs";
+import EditModerateur from "./pages/EditModerateur";
+import EditPassword from "./pages/EditPassword";
+import Profile from "./pages/Profile";
+import Article from "./pages/Article";
+import { ArticleProvider } from "./contexts/ArticleContext";
+import AddModerator from "./pages/AddModerator";
+import AddModeratorBtn from "./components/buttons/AddModeratorBtn";
+import EditArticleBtn from "./components/buttons/EditArticleBtn";
+import EditArticle from "./pages/EditArticle";
+import Favorite from "./pages/Favorite";
+
+/**
+ * Main application component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered JSX element.
+ */
+function App() {
+  const location = useLocation();
+  const { userProfile } = useContext(UserContext);
+
+  return (
+    &lt;div className="flex w-screen h-screen overflow-hidden">
+      &lt;ArticleProvider>
+        &lt;AnimatePresence mode="wait">
+          &lt;Routes key={location.pathname} location={location}>
+            {/* Error route */}
+            &lt;Route path="*" element={&lt;Error404 />} />
+
+            {/* Public routes */}
+            &lt;Route exact path={routes.HEADER} element={&lt;Header />} />
+            &lt;Route exact path={routes.SIGNIN} element={&lt;SignIn />} />
+            &lt;Route exact path={routes.SIGNUP} element={&lt;SignUp />} />
+
+            {/* Private routes */}
+            &lt;Route exact path="/" element={&lt;PrivateRoute />}>
+              {/* Home route */}
+              &lt;Route
+                exact
+                path={routes.HOME}
+                element={
+                  &lt;Layout
+                    title={"Home"}
+                    buttonComponent={
+                      userProfile &amp;&amp; userProfile.role === "admin" ? (
+                        &lt;AddArticleBtn />
+                      ) : null
+                    }
+                  >
+                    &lt;Home />
+                  &lt;/Layout>
+                }
+              />
+
+              {/* Favorite route */}
+              &lt;Route
+                exact
+                path={routes.FAVORITE}
+                element={
+                  &lt;Layout title={"Favorite"}>
+                    &lt;Favorite />
+                  &lt;/Layout>
+                }
+              />
+
+              {/* Other routes... */}
+            &lt;/Route>
+          &lt;/Routes>
+        &lt;/AnimatePresence>
+      &lt;/ArticleProvider>
+    &lt;/div>
+  );
+}
+
+export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddArticleBtn">AddArticleBtn</a></li><li><a href="global.html#AddModerator">AddModerator</a></li><li><a href="global.html#AddModeratorBtn">AddModeratorBtn</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Article">Article</a></li><li><a href="global.html#ArticleCard">ArticleCard</a></li><li><a href="global.html#ArticleDetails">ArticleDetails</a></li><li><a href="global.html#AuthPagesBg">AuthPagesBg</a></li><li><a href="global.html#BackToMenuBtn">BackToMenuBtn</a></li><li><a href="global.html#Card">Card</a></li><li><a href="global.html#EditArticle">EditArticle</a></li><li><a href="global.html#EditArticleBtn">EditArticleBtn</a></li><li><a href="global.html#EditModerateur">EditModerateur</a></li><li><a href="global.html#EditPassword">EditPassword</a></li><li><a href="global.html#Error404">Error404</a></li><li><a href="global.html#Favorite">Favorite</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Moderateurs">Moderateurs</a></li><li><a href="global.html#ModifierModerateur">ModifierModerateur</a></li><li><a href="global.html#ModifierMotDePasse">ModifierMotDePasse</a></li><li><a href="global.html#PopDeleteModer">PopDeleteModer</a></li><li><a href="global.html#PopLogOut">PopLogOut</a></li><li><a href="global.html#PopModifierArticle">PopModifierArticle</a></li><li><a href="global.html#PopModifierModerateur">PopModifierModerateur</a></li><li><a href="global.html#PopModifierMotDePasseERR">PopModifierMotDePasseERR</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#ProfileButton">ProfileButton</a></li><li><a href="global.html#SideMenu">SideMenu</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Feb 04 2024 01:51:39 GMT+0100 (heure normale d’Afrique de l’Ouest)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

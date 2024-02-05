@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/layout/Layout.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/layout/Layout.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import PropTypes from "prop-types";
+import SearchBar from "./SearchBar";
+import { getTitleIcon } from "../../functions/layoutFct";
+import { FilterProvider } from "../../contexts/FilterContext";
+import ProfileButton from "../buttons/ProfileButton";
+import SideMenu from "./SideMenu";
+import BackToMenuBtn from "../buttons/BackToMenuBtn";
+
+/**
+ * General layout component for rendering pages.
+ *
+ * @component
+ * @param {Object} props - The component properties.
+ * @param {string} props.title - The title of the page.
+ * @param {React.ReactNode} props.children - The content to be rendered within the layout.
+ * @param {React.ReactNode} props.buttonComponent - Additional button component to be rendered on the right side of the title bar.
+ * @returns {JSX.Element} The rendered JSX element.
+ */
+function Layout({ title, children, buttonComponent }) {
+  const TitleIcon = getTitleIcon(title);
+
+  return (
+    &lt;FilterProvider>
+      &lt;SideMenu title={title} />
+
+      &lt;div className="w-full flex flex-col justify-cetner items-center pt-5 gap-8">
+        &lt;div className="w-full px-5 flex justify-center items-center max-xl:justify-start ">
+          &lt;div className="w-fit rounded-full shadow-[0_0_25px_-7px_rgba(223,125,0,0.7)]">
+            &lt;SearchBar />
+          &lt;/div>
+
+          &lt;ProfileButton />
+        &lt;/div>
+
+        &lt;div className="w-full h-screen flex flex-col justify-start overflow-hidden">
+          &lt;div className="w-full bg-orange text-white flex flex-row justify-between p-4 items-center rounded-t-2xl max-lg:p-2">
+            {title !== "Return Button" ? (
+              &lt;div className="flex justify-start items-center">
+                &lt;TitleIcon className="w-6 h-6 mx-2 max-lg:w-5" />
+                &lt;p className=" font-bold text-2xl font-poppins max-lg:text-xl">
+                  {title}
+                &lt;/p>
+              &lt;/div>
+            ) : (
+              &lt;BackToMenuBtn />
+            )}
+
+            {buttonComponent}
+          &lt;/div>
+          &lt;div className="w-full flex-wrap overflow-y-scroll h-full">
+            {children}
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/FilterProvider>
+  );
+}
+
+Layout.propTypes = {
+  /**
+   * The title of the page.
+   */
+  title: PropTypes.string.isRequired,
+  /**
+   * The content to be rendered within the layout.
+   */
+  children: PropTypes.node.isRequired,
+  /**
+   * Additional button component to be rendered on the right side of the title bar.
+   */
+  buttonComponent: PropTypes.node,
+};
+
+export default Layout;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddArticleBtn">AddArticleBtn</a></li><li><a href="global.html#AddModerator">AddModerator</a></li><li><a href="global.html#AddModeratorBtn">AddModeratorBtn</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Article">Article</a></li><li><a href="global.html#ArticleCard">ArticleCard</a></li><li><a href="global.html#ArticleDetails">ArticleDetails</a></li><li><a href="global.html#AuthPagesBg">AuthPagesBg</a></li><li><a href="global.html#BackToMenuBtn">BackToMenuBtn</a></li><li><a href="global.html#Card">Card</a></li><li><a href="global.html#EditArticle">EditArticle</a></li><li><a href="global.html#EditArticleBtn">EditArticleBtn</a></li><li><a href="global.html#EditModerateur">EditModerateur</a></li><li><a href="global.html#EditPassword">EditPassword</a></li><li><a href="global.html#Error404">Error404</a></li><li><a href="global.html#Favorite">Favorite</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Moderateurs">Moderateurs</a></li><li><a href="global.html#ModifierModerateur">ModifierModerateur</a></li><li><a href="global.html#ModifierMotDePasse">ModifierMotDePasse</a></li><li><a href="global.html#PopDeleteModer">PopDeleteModer</a></li><li><a href="global.html#PopLogOut">PopLogOut</a></li><li><a href="global.html#PopModifierArticle">PopModifierArticle</a></li><li><a href="global.html#PopModifierModerateur">PopModifierModerateur</a></li><li><a href="global.html#PopModifierMotDePasseERR">PopModifierMotDePasseERR</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#ProfileButton">ProfileButton</a></li><li><a href="global.html#SideMenu">SideMenu</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Feb 04 2024 01:51:39 GMT+0100 (heure normale d’Afrique de l’Ouest)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
