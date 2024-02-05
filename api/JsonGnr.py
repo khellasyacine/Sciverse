@@ -103,11 +103,14 @@ def JsonGenr(pdf_path,article_name):
 
     json_path = "./tests/test_out/Jsonfile.json"
     json_data = parse_xml_to_json(xml_path, json_path)
-
+    
+    article_name = f"{article_name}.pdf"
+    pdf_path = os.path.join(pdf_path, article_name)
 
     # Remove the XML file
-    # os.remove(xml_path)
-    # os.remove(json_path)
+    os.remove(xml_path)
+    os.remove(json_path)
+    os.remove(pdf_path)
 
     return json_data
 

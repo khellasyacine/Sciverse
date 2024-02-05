@@ -152,49 +152,63 @@ def edit_article(article_id):
     current_user_id = get_jwt_identity()
 
     if request.method == 'PUT':
+        print("Existing authors before modification:", len(article.authors))
+
         # Update the article fields if provided in the request and not empty
-        if 'title' in request.json and request.json['title']:
+        if 'title' in request.json and request.json['title'] != "":
             article.title = request.json['title']
-        if 'abstract' in request.json and request.json['abstract']:
+        if 'abstract' in request.json and request.json['abstract'] != "":
             article.abstract = request.json['abstract']
-        if 'full_text' in request.json and request.json['full_text']:
+        if 'full_text' in request.json and request.json['full_text'] != "":
             article.full_text = request.json['full_text']
 
-        # Update other attributes if provided in the request
-        if 'references' in request.json:
-            article.references = []
-            for reference_data in request.json['references']:
-                if reference_data:
-                    reference = BibliographicReference.query.filter_by(reference=reference_data).first()
-                    if not reference:
-                        reference = BibliographicReference(reference=reference_data)
-                        db.session.add(reference)
-                    article.references.append(reference)
-
+        # Handle addition and deletion of keywords
         if 'keywords' in request.json:
-            article.keywords = []
-            for keyword_data in request.json['keywords']:
-                if keyword_data:
+            new_keywords = request.json['keywords']
+            current_keywords = [keyword.keyword for keyword in article.keywords]
+
+            # Keywords to add
+            for keyword_data in new_keywords:
+                if keyword_data and keyword_data not in current_keywords:
                     keyword = Keyword.query.filter_by(keyword=keyword_data).first()
                     if not keyword:
                         keyword = Keyword(keyword=keyword_data)
                         db.session.add(keyword)
                     article.keywords.append(keyword)
 
-        if 'authors' in request.json:
-            article.authors = []
-            for author_data in request.json['authors']:
-                if author_data:
-                    author = Author.query.filter_by(email=author_data['email']).first()
-                    if not author:
-                        author = Author(name=author_data['name'], email=author_data['email'])
-                        db.session.add(author)
-                    article.authors.append(author)
+            # Keywords to delete
+            for keyword_data in current_keywords:
+                if keyword_data not in new_keywords:
+                    keyword = Keyword.query.filter_by(keyword=keyword_data).first()
+                    if keyword:
+                        article.keywords.remove(keyword)
+
+        # Handle addition and deletion of references
+        if 'references' in request.json:
+            new_references = request.json['references']
+            current_references = [reference.reference for reference in article.references]
+
+            # references to add
+            for reference_data in new_references:
+                if reference_data and reference_data not in current_references:
+                    reference = BibliographicReference.query.filter_by(reference=reference_data).first()
+                    if not reference:
+                        reference = BibliographicReference(reference=reference_data)
+                        db.session.add(reference)
+                    article.keywords.append(reference)
+
+            # references to delete
+            for reference_data in current_references:
+                if reference_data not in new_references:
+                    reference = BibliographicReference.query.filter_by(reference=reference_data).first()
+                    if reference:
+                        article.references.remove(reference)
+
 
         # Save the updated article if any change is made
         if db.session.dirty:
             db.session.commit()
-
+            
         mapping_entry = ArticleElasticsearchMapping.query.filter_by(article_id=article.id).first()
         if mapping_entry:
             elasticsearch_id = mapping_entry.elasticsearch_id
@@ -207,11 +221,8 @@ def edit_article(article_id):
                     "abstract": article.abstract,
                     "full_text": article.full_text,
                     "keywords": [keyword.keyword for keyword in article.keywords],
-                    "pdf_url": article.pdf_url,
                     "references": [reference.reference for reference in article.references],
                     "date": article.date.strftime('%Y-%m-%dT%H:%M:%SZ'),  # Format date as per Elasticsearch
-                    "authors": [{"name": author.name, "email": author.email} for author in article.authors],
-                    "institution_names": [inst.institution_name for author in article.authors for inst in author.institutions]
                 }
             })
         except Exception as es_error:
@@ -227,6 +238,7 @@ def edit_article(article_id):
         db.session.commit()
 
         return jsonify({'message': 'Article edited successfully'})
+    
 
 
 #delete article 
@@ -246,7 +258,6 @@ def delete_article(article_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
 
 
 

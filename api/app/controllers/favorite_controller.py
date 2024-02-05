@@ -68,29 +68,36 @@ def get_favorite_articles():
                 'date': article.date.isoformat()
             }
 
-            # Check if keywords are stored as strings or Keyword model instances
-            if isinstance(article.keywords[0], Keyword):
-                # Extract keyword strings from Keyword model instances
-                response_article['keywords'] = [keyword.keyword for keyword in article.keywords]
-            else:
-                # Keywords are already stored as strings
-                response_article['keywords'] = article.keywords
+            # Add keywords if available
+            if hasattr(article, 'keywords'):
+                if article.keywords and isinstance(article.keywords[0], Keyword):
+                    # Extract keyword strings from Keyword model instances
+                    response_article['keywords'] = [keyword.keyword for keyword in article.keywords]
+                else:
+                    # Keywords are already stored as strings
+                    response_article['keywords'] = article.keywords
 
-            for author in article.authors:
-                author_data = {
-                    'id': author.id,
-                    'name': author.name,
-                    'email': author.email,
-                    'institutions': [{'institution_name': institution.institution_name} for institution in author.institutions]
-                }
-                response_article['authors'].append(author_data)
+            # Add references if available
+            if hasattr(article, 'references'):
+                if article.references and isinstance(article.references[0], BibliographicReference):
+                    # Extract keyword strings from Keyword model instances
+                    response_article['references'] = [reference.reference for reference in article.references]
+                else:
+                    # Keywords are already stored as strings
+                    response_article['references'] = article.references
 
-            for reference in article.references:
-                reference_data = {
-                    'id': reference.id,
-                    'reference': reference.reference
-                }
-                response_article['references'].append(reference_data)
+            if article.authors :
+                for author in article.authors:
+                    author_data = {
+                        'id': author.id,
+                        'name': author.name,
+                        'email': author.email,
+                        'institutions': [{'institution_name': institution.institution_name} for institution in author.institutions]
+                    }
+                    response_article['authors'].append(author_data)
+
+
+            # Add authors and references as before
 
             response_articles.append(response_article)
 
@@ -98,3 +105,7 @@ def get_favorite_articles():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+
+
